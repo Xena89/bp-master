@@ -11,7 +11,7 @@ from .views import NewGroupView, RemoveUserGroupView, EditGroupView, DashboardGr
 admin.autodiscover()
 
 urlpatterns = [
-    # path('', GroupView.as_view(), name="group"),
+    path('', DashboardGroupView.as_view(), name="group"),
     path('edit/<int:group_id>/', EditGroupView.as_view(), name="edit_group"),
     path('delete/<int:group_id>/', RemoveUserGroupView.as_view(), name="delete_group"),
     path('group/<int:group_id>/', DashboardGroupView.as_view(), name="dashboard_group"),

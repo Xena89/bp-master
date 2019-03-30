@@ -1,6 +1,5 @@
-#from django.apps import AppConfig
-#
-#
-#class LdapConfig(AppConfig):
-#  name = 'ldap'
-#
+from django.apps import AppConfig
+
+
+class LdapConfig(AppConfig):
+    name = 'ldap'

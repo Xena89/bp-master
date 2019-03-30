@@ -13,14 +13,13 @@ from notification.models import EmailBucket
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from .forms import AddTicketForm, AddCommentForm, EditTicketForm
-from notification.functions import send_assigned_notification, \
-    send_ticket_edit_notification, send_user_commented_ticket, send_ticket_rejected_notification, \
-    send_ticket_deadline_notification, send_email_now
+from notification.functions import send_email, send_assigned_notification, \
+    send_ticket_edit_notification, send_user_commented_ticket, send_ticket_rejected_notification, send_ticket_deadline_notification, send_email_now
 import copy
 from django.utils.text import Truncator
 import bleach
 from account.models import MyUser
-
+from django.contrib.auth.models import Group
 
 class NewTicketView(LoginRequiredMixin, View):
     """ Backend to create a new ticket template in new_ticket.html """
@@ -107,10 +106,11 @@ class ShowTicketView(LoginRequiredMixin, View):
         if form.is_valid():
             # get the comment instance made by form.save
             instance = form.save(commit=False)
-
+            user = self.request.user
+            # set the ticket associated with the comment
             instance.ticket = ticket
             # set the user which made the comment
-            instance.user = self.request.user
+            instance.user = user
             # if button 'close and comment' submitted and current state is open
             if '_closeandcomm' in self.request.POST and ticket.state == 'open':
                 # change state of ticket to done
@@ -129,9 +129,8 @@ class ShowTicketView(LoginRequiredMixin, View):
                                  _('Kommentar wurde erfolgreich hinzugefügt.'))
 
             # send it to the ticket owner and to everyboy who commented the ticket
-            user = self.request.user
             user_notification_list = []
-            if ticket.assigned_user != user:
+            if ticket.assigned_user != user and ticket.assigned_user:
                 user_notification_list.append(ticket.assigned_user)
             # iterate over retrieved comments
             for comment in comments:
@@ -267,7 +266,9 @@ class EditTicketView(LoginRequiredMixin, View):
         user = self.request.user
         # get the given ticket
         ticket = Ticket.objects.get(id=self.kwargs["ticket_id"])
-        old_ticket = copy.copy(ticket)
+        # make a temp copy of the ticket
+        old_ticket = copy.deepcopy(ticket)
+        # get recurrences from request.POST parameter recurrences
         recurrences = self.request.POST.get('recurrences', ticket.recurrences)
         form = EditTicketForm(self.request.POST, instance=ticket)
         if form.is_valid():
@@ -282,15 +283,11 @@ class EditTicketView(LoginRequiredMixin, View):
                     log = Log()
                     log.before = getattr(old_ticket, name)
                     log.after = getattr(ticket, name)
-                    log.fieldname = name
+                    log.fieldname = Ticket._meta.get_field(name).verbose_name.title()
                     log.save()
                     # append the log to changes list
                     changes.append(log)
 
-                    message += name + " = " + str(getattr(old_ticket, name))
-                    if i < len(form.changed_data) - 1:
-                        message += ", "
-                    i += 1
 
                 # return HttpResponse(message)
                 create_ticket_log(ticket, user, "changed", message, changes)
@@ -325,6 +322,9 @@ class EditTicketView(LoginRequiredMixin, View):
                     if form.cleaned_data['assigned_group'] and ticket.rejected:
                         ticket.rejected = False
 
+                if 'state' in form.changed_data:
+                    if form.cleaned_data['state']  == 'done':
+                        ticket.rejected = False
 
             ticket.recurrences = recurrences
             # save the changes made above
@@ -471,6 +471,7 @@ class DashboardView(LoginRequiredMixin, View):
     def post(self, *args, **kwargs):
         pass
 
+
 class MyTicketsView(LoginRequiredMixin, View):
     """ Backend to show all open tickets template in my_ticket.html """
     template_tickets = "ticket/pages/my_tickets.html"
@@ -614,7 +615,7 @@ def rec_cron(request):
             dup.save()
 
     # notify users if deadline is reached
-    tickets_notify = Ticket.objects.filter(accepted=True, deadline=datetime.today()) # pragma: no cover
+    tickets_notify = Ticket.objects.filter(accepted=True, deadline=datetime.today())
     for ticket in tickets_notify:
         send_ticket_deadline_notification(ticket)
 
@@ -634,8 +635,8 @@ def rec_cron(request):
 
             send_email_now([].append(user.email), subject, message)
 
-    return HttpResponse("Done.") # pragma: no cover
 
+    return HttpResponse("Done.")
 
 def create_ticket_log(ticket, user, state, message=None, changes=None):
     log = TicketLog()
@@ -649,12 +650,6 @@ def create_ticket_log(ticket, user, state, message=None, changes=None):
         for change in changes:
             log.changes.add(change)
     log.save()
-
-
-def send(user, object):
-    user + " hat dir ein Ticket zugewiesen"
-
-    user + " hat dein Ticket "
 
 
 def get_ticket(ticket):

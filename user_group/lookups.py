@@ -3,7 +3,7 @@ from ajax_select import register, LookupChannel
 from account.models import MyUser
 from django.db.models import Q
 
-
+# used in .forms.py
 @register('look_members')
 class UserLookup(LookupChannel):
     """

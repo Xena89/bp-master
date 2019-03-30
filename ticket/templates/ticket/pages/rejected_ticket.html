@@ -41,7 +41,7 @@
                               class="form-row">
                             {% csrf_token %}
                             {{ crispy }}
-                            <select class="form-control form-control-sm"
+                            <select class="form-control form-control-sm" required
                                     id="selectUser" name="selectUser" size="1">
                                 {% for user in users %}
                                 <option value="{{ user.id }}" {% if request.user == user %}selected{% endif %}>

@@ -10,7 +10,7 @@
 #
 # class BasicSelenium(unittest.TestCase):
 #     def setUp(self):
-#         # делаем работу selenium невидимой
+#         
 #         display = Display(visible=0, size=(800, 600))
 #         display.start()
 #         self.driver = webdriver.Chrome()

@@ -42,8 +42,7 @@ class Ticket(models.Model):
     time_assign_user = models.DateTimeField(default=datetime.now, blank=True,
                                             null=True)
     assigned_group = models.ForeignKey(Group, on_delete=models.SET_NULL,
-                                        related_name ="assigned_group",
-                                       blank=True, null=True, verbose_name="gruppe",
+                                        blank=True, null=True, verbose_name="gruppe",
                                        help_text=_("Die Gruppe, für die das Ticket interessant ist."))
     accepted = models.BooleanField("Akzeptiert", default=False)
     text = models.TextField(
@@ -62,7 +61,7 @@ class Ticket(models.Model):
     recurrences = RecurrenceField(blank=True, default='',
                                 verbose_name="wiederholungen")
     # only used if ticket is a group ticket
-    ignored_by = models.ManyToManyField(get_user_model(), verbose_name="ignoriert bei")
+    ignored_by = models.ManyToManyField(get_user_model(), blank=True, verbose_name="ignoriert bei")
     # only used for assigned_user
     rejected = models.BooleanField("abgelehnt", default=False)
     # does not consider self assignments

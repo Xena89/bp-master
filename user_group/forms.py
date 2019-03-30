@@ -12,7 +12,7 @@ class AddGroupForm(ModelForm):
     class Meta:
         model = Group
         exclude = ['permissions']
-
+    # not part of model Group, adds a FormField for selecting members of the group
     members = AutoCompleteSelectMultipleField('look_members', required=True,
                                               help_text=_(
                                                   "Suche nach Mitgliedern(Nutzername, Vor- und Nachname). Vorgeschlagene Nutzer auswählen."),

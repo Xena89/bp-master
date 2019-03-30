@@ -5,7 +5,7 @@ from .views import ShowTicketView, NewTicketView, PendingTicketView, EditTicketV
 urlpatterns = [
     path('', DashboardView.as_view(), name="dashboard"),
     path('new/', NewTicketView.as_view(), name="new_ticket"),
-    path('ticket/<int:ticket_id>', ShowTicketView.as_view(), name="show_ticket"),
+	path('ticket/<int:ticket_id>', ShowTicketView.as_view(), name="show_ticket"),
     path('inbox/', PendingTicketView.as_view(), name="inbox_ticket"),
     path('ticket/edit/<int:ticket_id>', EditTicketView.as_view(), name="edit_ticket"),
     path('ticket/restore/<int:ticket_id>', RestoreTicketView.as_view(), name="restore_ticket"),
