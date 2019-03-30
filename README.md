@@ -1,7 +1,6 @@
 # Aufgabenverwaltung besser machen! 
 [![Build Status](https://travis-ci.com/Xena89/bp-master.svg?branch=master)](https://travis-ci.com/Xena89/bp-master)
-[![Coverage Status](https://coveralls.io/repos/github/Xena89/bp-master/badge.svg?branch=master)](https://coveralls.io/github/Xena89/bp-master?branch=master)
-
+[![Coverage Status](https://coveralls.io/repos/github/Xena89/bp-master/badge.svg)](https://coveralls.io/github/Xena89/bp-master)
 
 
 # Befehle
