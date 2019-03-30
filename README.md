@@ -1,6 +1,6 @@
 # Aufgabenverwaltung besser machen! 
-[![Build Status](https://travis-ci.com/frederikroeper/bp.svg?branch=master)](https://travis-ci.com/frederikroeper/bp)
-[![Coverage Status](https://coveralls.io/repos/github/frederikroeper/bp/badge.svg?branch=master)](https://coveralls.io/github/frederikroeper/bp?branch=master)
+[![Build Status](https://travis-ci.com/Xena89/bp-master.svg?branch=master)](https://travis-ci.com/Xena89/bp-master)
+[![Coverage Status](https://coveralls.io/repos/github/Xena89/bp-master/badge.svg?branch=master)](https://coveralls.io/github/Xena89/bp-master?branch=master)
 
 
 
