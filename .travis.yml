@@ -5,7 +5,10 @@ python:
 install:
   - pip install -r ./requirements.txt
   - pip install coveralls
-
+  
+matrix:
+  fast_finish: true
+  
 script: 
   - coverage run --source='.' manage.py test
   - coverage report
